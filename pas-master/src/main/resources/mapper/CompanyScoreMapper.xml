@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hj.pas.mapper.CompanyScoreMapper">
+
+	<select id="getSortList" resultType="com.hj.pas.vo.CompanySortVO">
+        SELECT
+			c.company_name,
+			cs.scores
+		FROM
+			t_company c
+			LEFT JOIN t_company_score cs ON c.id = cs.company_id
+		WHERE
+			c.hf_group = #{hfGroup}
+			AND cs.cycle = #{cycle}
+			AND cs.score_person = #{scorePerson}
+			order by cs.scores desc;
+    </select>
+</mapper>

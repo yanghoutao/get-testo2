@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hj.pas.mapper.CompanyKpiMapper">
+	<select id="getCompanyList" parameterType="string" resultType="com.hj.pas.vo.CompanyScoresVO">
+        SELECT
+        min(c.id) as company_id,
+        c.company_name,
+        MIN( c.hf_group ) as hf_group,
+        COUNT(*) as wait_count
+        FROM
+        t_company c INNER JOIN t_company_dimension cd on c.id = cd.company_id
+        INNER JOIN t_dimension d on  cd.dimension_id = d.id
+        INNER JOIN t_company_kpi ck on cd.id = ck.company_dimension_id
+        LEFT JOIN t_score s on cd.id = s.kpi_id
+        WHERE
+        cd.cycle = #{cycle}
+        AND s.scores IS NULL
+        GROUP BY
+        c.company_name
+    </select>
+
+	<select id="getKpiList" resultType="com.hj.pas.vo.CompanyKpiVO">
+        SELECT
+	d.id as dimension_id,
+	d.dimension_name,
+	cd.weight AS dimension_weight,
+	cd.min_value as dimension_min_value,
+	cd.max_value as dimension_max_value,
+	cd.sort AS dimension_sort,
+	cd.score_type as dimension_score_type,
+	ck.id AS kpi_id,
+	ck.company_dimension_id,
+	ck.kpi_no,
+	ck.kpi,
+	ck.kpi_define,
+	ck.before_last_year,
+	ck.last_year,
+	ck.pass,
+	ck.full_mark,
+	ck.challenge,
+	ck.weight as kpi_weight,
+	ck.min_value as kpi_min_value,
+	ck.max_value as kpi_max_value,
+	ck.complete_standard,
+	ck.real_value,
+	ck.sort as kpi_sort,
+	ck.score_method,
+	ck.score_type as kpi_score_type,
+	ck.need_score,
+	ck.source,
+	ck.appraiser,
+	ck.remark,
+	s.id as score_id,
+	s.scores,
+	s.company_score_id
+FROM
+	t_company c
+	INNER JOIN t_company_dimension cd ON c.id = cd.company_id
+	INNER JOIN t_dimension d ON cd.dimension_id = d.id
+	INNER JOIN t_company_kpi ck ON cd.id = ck.company_dimension_id
+	LEFT JOIN t_score s ON cd.id = s.kpi_id
+WHERE
+	c.id = #{companyId}
+	AND cd.cycle = #{cycle}
+	order by ck.sort
+    </select>
+</mapper>
