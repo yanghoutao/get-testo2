@@ -6,4 +6,8 @@ public class Helloword {
         System.out.println("hellowerd");
         System.out.println("hellowerd");
     }
+    public void  test(){
+        int i=0;
+        i+=10;
+    }
 }
